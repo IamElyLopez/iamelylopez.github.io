@@ -1,0 +1,401 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<title>Auto Win</title>
+	<style>
+		html, body {
+			margin: 0px;
+			padding: 0px;
+		}
+		.main_wrapper {
+			width: 100%;
+			height: 100%;
+		}
+		.cell {
+			width: 20px; height: 20px; background-color: yellow; border: 2px solid black; float: left;
+		}
+	</style>
+	
+
+</head>
+<body>
+	<div class="main_wrapper">
+		<div id="cells" style="width: 480px; height: 480px; padding: 3px; background: black;">
+				
+		</div>
+		<div style="width: 480px; height: 30px; padding: 3px; background: blue; font-size: 18px; font-weight: bold; color: white;">
+			<span>Current Player:</span>
+			<span id="currentPlayer">Player 1</span>
+		</div>
+		<div style="width: 480px; height: 30px; padding: 3px; background: blue; font-size: 18px; font-weight: bold; color: white;">
+			<div style="width: 240px; height: 30px; padding: 0px; background: blue; font-size: 18px; font-weight: bold; color: white; float: left;">
+				<span>Player 1 Score:</span>
+				<span id="p1score" >0</span>
+			</div>
+			<div style="width: 240px; height: 30px; padding: 0px; background: blue; font-size: 18px; font-weight: bold; color: white; float: left;">
+				<span>Player 2 Score:</span>
+				<span id="p2score">0</span>
+			</div>
+		</div>
+		<div style="width: 480px; height: 30px; padding: 3px; background: blue; font-size: 18px; font-weight: bold; color: white;">
+			<div style="width: 240px; height: 30px; padding: 0px; background: blue; font-size: 18px; font-weight: bold; color: white; float: left;">
+				<input id="p1Wins" type="button" value="Player 1 Wins" style="width: 240px; height: 30px;">
+			</div>
+			<div style="width: 240px; height: 30px; padding: 0px; background: blue; font-size: 18px; font-weight: bold; color: white; float: left;">
+				<input id="p2Wins" type="button" value="Player 2 Wins" style="width: 240px; height: 30px;">
+			</div>
+		</div>
+
+		<input type="button" value="RESET" id="reset" style="width: 486px; height: 30px;">
+    </div>
+    <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js" integrity="sha256-4+XzXVhsDmqanXGHaHvgh1gMQKX40OUvDEBTu8JcmNs=" crossorigin="anonymous"></script>
+	<script>
+        let div=document.getElementById("cells");//get parent of div cells  div with id-->cells
+        //======================================================
+        function createCells(){//create all cells as div
+            var i,j;
+            for (var i=0;i<20;i++)
+                for (var j=0;j<20;j++){
+                    var newDiv = document.createElement('div');
+                    newDiv.className="cell";//belong to class -->cell
+                    newDiv.id="id_"+i.toString()+"_"+j.toString();//id-->id_0_0 ..
+                    div.appendChild(newDiv);
+                }
+        }
+        //===========================================================
+        createCells();
+		var PLAYER_1 = 1;
+		var PLAYER_1color = 'blue'
+		var PLAYER_2 = 2;
+		var PLAYER_2color = 'red'
+		var playerturn = 1;
+		var score1=0;
+		var score2=0;
+		var count = 0
+		var game_info = {
+			currentPlayer : PLAYER_1,
+
+			scores : {
+				player1 : 0,
+				player2 : 0
+			},
+
+			cells : [
+				[0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0],
+				[0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0],
+				[0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0],
+				[0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0],
+				[0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0],
+				[0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0],
+				[0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0],
+				[0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0],
+				[0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0],
+				[0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0],
+				[0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0],
+				[0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0],
+				[0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0],
+				[0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0],
+				[0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0],
+				[0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0],
+				[0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0],
+				[0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0],
+				[0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0],
+				[0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0]
+			],
+
+			reset : function(){
+				updateUI();
+			},
+
+			p1Wins : function(){
+			updateUI();
+			score1++;
+			game_info.scores['player1']= score1;
+			document.getElementById("p1score").innerHTML=game_info.scores['player1'];
+			alert("Player 1 Wins");
+			game_info.finish;
+				game_info.currentPlayer = PLAYER_2;
+					$("#currentPlayer").html("Player "+game_info.currentPlayer);
+					
+			},
+
+			p2Wins : function(){
+			score2++;
+			game_info.scores['player2']= score2;
+			document.getElementById("p2score").innerHTML=game_info.scores['player2'];
+			alert("Player 2 Wins");
+			game_info.finish;
+				game_info.currentPlayer = PLAYER_1;
+					$("#currentPlayer").html("Player "+game_info.currentPlayer);
+			}
+		};
+		var finish = function(){
+			game_info.cells = [
+				[0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0],
+				[0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0],
+				[0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0],
+				[0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0],
+				[0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0],
+				[0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0],
+				[0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0],
+				[0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0],
+				[0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0],
+				[0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0],
+				[0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0],
+				[0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0],
+				[0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0],
+				[0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0],
+				[0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0],
+				[0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0],
+				[0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0],
+				[0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0],
+				[0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0],
+				[0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0]
+			]
+		};
+		var cellClick = function(x, y){
+            var cell=document.getElementById("id_"+x.toString()+"_"+y.toString());
+            if(playerturn==1){	//player 1
+                var color = $(cell).css('background-color')
+				if(color!="rgb(255, 255, 0)"){//not yellow
+					alert("invalid move");
+				}else{//yellow
+                    $(cell).css('background-color',PLAYER_1color);
+                    game_info.cells[x][y]=playerturn;
+					playerturn=2;
+					game_info.currentPlayer = PLAYER_2;
+                    $("#currentPlayer").html("Player "+game_info.currentPlayer);
+                    checkwin(1,x,y);
+				}
+			}else if(playerturn==2){
+				var color = $(cell).css('background-color');
+				if(color!="rgb(255, 255, 0)"){//not yellow
+					alert("invalid move");
+				}else{//yellow
+                    $(cell).css('background-color',PLAYER_2color);
+                    game_info.cells[x][y]=playerturn;
+					playerturn=1;					
+					game_info.currentPlayer = PLAYER_1;
+                    $("#currentPlayer").html("Player "+game_info.currentPlayer);
+                    checkwin(2,x,y);
+				}	
+            }			
+		}
+		var updateUI = function(x, y){
+        	if($("#reset").click(function(){
+				window.location.reload(0);
+			}));
+			$("#p1Wins").click(function(){
+				finish();
+				$(".cells").css('background-color','rgb(255,255,0)');
+				playerturn = 2;
+			});
+			$("#p2Wins").click(function(){
+				finish();
+				$(".cell").css('background-color','rgb(255,255,0)');
+				playerturn = 1;
+			});
+		}
+		$(document).ready(function(){
+			updateUI();
+            $(".cell").click(function(){
+                cell_clicked=this;
+                console.log("you clicked on ",cell_clicked.id);
+                var a=cell_clicked.id;
+                var b=a.split("_");
+                var x=parseInt(b[1]);
+                var y=parseInt(b[2]);
+                cellClick(x,y);
+			});
+			$("#p1Wins").click(function(){
+				game_info.p1Wins();
+				finish();
+				$(".cell").css('background-color','rgb(255,255,0)');
+				playerturn = 2;
+			});
+			$("#p2Wins").click(function(){
+				game_info.p2Wins();
+				finish();
+				$(".cell").css('background-color','rgb(255,255,0)');
+				playerturn = 1;
+			});
+        });
+
+function checkwin(playerNo,x,y){//x=row  y=column
+	var i=0;
+	var right=0;
+    var left=0;
+    var down = 0;
+    var up = 0;
+
+    //check right
+    while(y+i>=0 && y+i<20 && game_info.cells[x][y+i]==playerNo) {
+       	i=i+1;
+    }
+    right=i-1;
+	console.log("right",right);
+    //check left
+    i=0;
+    while(y-i>=0 && y-i<20 && game_info.cells[x][y-i]==playerNo) {
+       	i=i+1;
+    }
+    left=i-1;
+    console.log("left",left);
+	i=0;	
+
+
+    //check DOWN
+    while(x+i>=0 && x+i<20 && game_info.cells[x+i][y]==playerNo) {
+       	i=i+1;
+    }
+    down=i-1;
+	console.log("down",down);
+    //check UP
+    i=0;
+    while(x-i>=0 && x-i<20 && game_info.cells[x-i][y]==playerNo) {
+       	i=i+1;
+    }
+    up=i-1;
+    console.log("up",up);
+    
+    //check DIAGONAL
+    i=0;
+    while(x+i>=0 && x+i<20 && game_info.cells[x+i][y+i]==playerNo) {
+       	i=i+1;
+    }
+    var diagonal1=i-1;
+    console.log("diagonal1",diagonal1);
+ 	i=0;
+    while(x-i>=0 && x-i<20 && game_info.cells[x-i][y-i]==playerNo) {
+       	i=i+1;
+    }
+    var diagonal2=i-1;
+    console.log("diagonal2",diagonal2);
+    i=0;
+
+
+
+
+	while(x-i>=0 && y+i<20 && game_info.cells[x-i][y+i]==playerNo){
+    	i=i+1;
+    }
+    var diagonal3=i-1;
+    console.log("diagonal3",diagonal3);
+    i=0;
+
+
+
+    while(x+i<20 && y-i>=0 && game_info.cells[x+i][y-i]==playerNo){
+		i=i+1;    	
+    }
+    var diagonal4=i-1;
+    console.log("diagonal4",diagonal4);
+    i=0;
+    
+
+
+
+
+
+
+
+
+    if(left+right+1>=4){
+        setTimeout(function() {
+            alert("Player "+playerNo.toString()+" Win!!");
+            if (playerNo == 1){
+        	score1++;
+			game_info.scores['player1']= score1;
+			document.getElementById("p1score").innerHTML=game_info.scores['player1'];
+           	finish();
+			$(".cell").css('background-color','rgb(255,255,0)');
+				playerturn = 2;
+		}
+		else if (playerNo == 2) {
+			score2++;
+			game_info.scores['player2']= score2;
+			document.getElementById("p2score").innerHTML=game_info.scores['player2'];
+			finish();
+			$(".cell").css('background-color','rgb(255,255,0)');
+				playerturn = 1;
+			}
+        }, 300)        
+    }
+    else if(down+up+1>=4){
+        setTimeout(function() {
+            alert("Player "+playerNo.toString()+" Win!!");
+            if (playerNo == 1){
+        	score1++;
+			game_info.scores['player1']= score1;
+			document.getElementById("p1score").innerHTML=game_info.scores['player1'];
+           	finish();
+			$(".cell").css('background-color','rgb(255,255,0)');
+				playerturn = 2;
+		}
+		else if (playerNo == 2) {
+			score2++;
+			game_info.scores['player2']= score2;
+			document.getElementById("p2score").innerHTML=game_info.scores['player2'];
+			finish();
+			$(".cell").css('background-color','rgb(255,255,0)');
+				playerturn = 1;
+			}
+        }, 300) 
+	}
+	else if(diagonal1+diagonal2+1>=4){
+		setTimeout(function() {
+            alert("Player "+playerNo.toString()+" Win!!");
+            if (playerNo == 1){
+        	score1++;
+			game_info.scores['player1']= score1;
+			document.getElementById("p1score").innerHTML=game_info.scores['player1'];
+           	finish();
+			$(".cell").css('background-color','rgb(255,255,0)');
+				playerturn = 2;
+		}
+		else if (playerNo == 2) {
+			score2++;
+			game_info.scores['player2']= score2;
+			document.getElementById("p2score").innerHTML=game_info.scores['player2'];
+			finish();
+			$(".cell").css('background-color','rgb(255,255,0)');
+				playerturn = 1;
+			}
+        }, 300) 
+	}
+	else if(diagonal3+diagonal4+1>=4){
+		setTimeout(function() {
+            alert("Player "+playerNo.toString()+" Win!!");
+            if (playerNo == 1){
+        	score1++;
+			game_info.scores['player1']= score1;
+			document.getElementById("p1score").innerHTML=game_info.scores['player1'];
+           	finish();
+			$(".cell").css('background-color','rgb(255,255,0)');
+				playerturn = 2;
+		}
+		else if (playerNo == 2) {
+			score2++;
+			game_info.scores['player2']= score2;
+			document.getElementById("p2score").innerHTML=game_info.scores['player2'];
+			finish();
+			$(".cell").css('background-color','rgb(255,255,0)');
+				playerturn = 1;
+			}
+        }, 300) 
+	}
+	
+
+
+    
+    
+
+
+
+
+}
+	</script>
+
+
+</body>
+</html>
